@@ -1,6 +1,6 @@
 package com.github.javiersantos.appupdater;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.github.javiersantos.appupdater.objects.Update;
 
