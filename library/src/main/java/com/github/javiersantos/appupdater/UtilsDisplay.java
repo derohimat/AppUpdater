@@ -79,8 +79,13 @@ class UtilsDisplay {
 
         PendingIntent pendingIntentUpdate = PendingIntent.getActivity(context, 0, UtilsLibrary.intentToUpdate(context, updateFrom, apk), PendingIntent.FLAG_CANCEL_CURRENT);
 
+        Intent notificationReceiver = new Intent(context, NotificationReceiver.class);
+        notificationReceiver.setAction("disable");
+        PendingIntent pendingIntentDisable = PendingIntent.getBroadcast(context, 0, notificationReceiver, PendingIntent.FLAG_UPDATE_CURRENT);
+
         NotificationCompat.Builder builder = getBaseNotification(context, title, content, smallIconResourceId)
-                .addAction(R.drawable.ic_system_update_white_24dp, context.getResources().getString(R.string.appupdater_btn_update), pendingIntentUpdate);
+                .addAction(R.drawable.ic_system_update_white_24dp, context.getResources().getString(R.string.appupdater_btn_update), pendingIntentUpdate)
+                .addAction(android.R.drawable.ic_menu_close_clear_cancel, context.getResources().getString(R.string.appupdater_btn_disable), pendingIntentDisable);
 
         notificationManager.notify(0, builder.build());
     }
