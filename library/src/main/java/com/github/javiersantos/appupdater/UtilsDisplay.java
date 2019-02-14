@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.media.RingtoneManager;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.core.app.NotificationCompat;
@@ -17,7 +19,6 @@ import com.github.javiersantos.appupdater.enums.UpdateFrom;
 import java.net.URL;
 
 class UtilsDisplay {
-
     static AlertDialog showUpdateAvailableDialog(final Context context, String title, String content, String btnNegative, String btnPositive, String btnNeutral, final DialogInterface.OnClickListener updateClickListener, final DialogInterface.OnClickListener dismissClickListener, final DialogInterface.OnClickListener disableClickListener) {
         return new AlertDialog.Builder(context)
                 .setTitle(title)
@@ -76,10 +77,9 @@ class UtilsDisplay {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         initNotificationChannel(context, notificationManager);
 
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, context.getPackageManager().getLaunchIntentForPackage(UtilsLibrary.getAppPackageName(context)), PendingIntent.FLAG_CANCEL_CURRENT);
         PendingIntent pendingIntentUpdate = PendingIntent.getActivity(context, 0, UtilsLibrary.intentToUpdate(context, updateFrom, apk), PendingIntent.FLAG_CANCEL_CURRENT);
 
-        NotificationCompat.Builder builder = getBaseNotification(context, contentIntent, title, content, smallIconResourceId)
+        NotificationCompat.Builder builder = getBaseNotification(context, title, content, smallIconResourceId)
                 .addAction(R.drawable.ic_system_update_white_24dp, context.getResources().getString(R.string.appupdater_btn_update), pendingIntentUpdate);
 
         notificationManager.notify(0, builder.build());
@@ -89,17 +89,14 @@ class UtilsDisplay {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         initNotificationChannel(context, notificationManager);
 
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, context.getPackageManager().getLaunchIntentForPackage(UtilsLibrary.getAppPackageName(context)), PendingIntent.FLAG_CANCEL_CURRENT);
-
-        NotificationCompat.Builder builder = getBaseNotification(context, contentIntent, title, content, smallIconResourceId)
+        NotificationCompat.Builder builder = getBaseNotification(context, title, content, smallIconResourceId)
                 .setAutoCancel(true);
 
         notificationManager.notify(0, builder.build());
     }
 
-    private static NotificationCompat.Builder getBaseNotification(Context context, PendingIntent contentIntent, String title, String content, int smallIconResourceId) {
+    private static NotificationCompat.Builder getBaseNotification(Context context, String title, String content, int smallIconResourceId) {
         return new NotificationCompat.Builder(context, context.getString(R.string.appupdater_channel))
-                .setContentIntent(contentIntent)
                 .setContentTitle(title)
                 .setContentText(content)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(content))
